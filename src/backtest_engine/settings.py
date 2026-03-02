@@ -34,7 +34,7 @@ class BacktestSettings(BaseSettings):
     results_dir: Path = Field(default=Path("results"), description="Output directory for reports")
 
     # ── Primary instrument ─────────────────────────────────────────────────────
-    default_symbol: str = "RTY"
+    default_symbol: str = "YM"
 
     # ── Bar settings ───────────────────────────────────────────────────────────
     low_interval: str = "5m"      # Base resolution used for data loading
