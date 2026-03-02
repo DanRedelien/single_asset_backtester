@@ -81,9 +81,9 @@ Working with minute-level OHLCV requires robust cleaning:
 
 Optimization on minute-level data over 2-year periods is heavily vectorized:
 *   **Optuna Budget**: 500 parameter trials per Fold
-*   **Single Trial Speed**: ~ 0.90 seconds
-*   **Average Fold Runtime**: ~ 7 minutes
-*   **Total WFV Execution**: ~ 35 minutes
+*   **Single Trial Speed**: ~ 0.77 seconds
+*   **Average Fold Runtime**: ~ 6 minutes
+*   **Total WFV Execution**: ~ 34 minutes
 
 ## Project Structure
 
