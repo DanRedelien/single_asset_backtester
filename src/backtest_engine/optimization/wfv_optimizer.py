@@ -15,11 +15,17 @@ import time
 import pandas as pd
 import numpy as np
 import math
+import optuna
+import optuna.logging
 
 from ..settings import BacktestSettings, get_settings
 from .fold_generator import PurgedFoldGenerator
 from .optimizer import OptunaOptimizer
 from src.data.data_lake import DataLake
+
+
+# Suppress Optuna logging to warnings only
+optuna.logging.set_verbosity(optuna.logging.WARNING)
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -270,14 +276,21 @@ class WalkForwardOptimizer:
         total_trials = 0
         wfo_start_time = time.time()
 
+        # Silence Optuna's trial-by-trial logs for a cleaner console
+        optuna.logging.set_verbosity(optuna.logging.WARNING)
+
         print(f"\n[WFV] Starting {n_folds}-Fold Walk-Forward on {symbol}...")
 
         for i, (train_idx, test_idx) in enumerate(folds):
-            # Convert indices to date boundaries
+            # Convert indices to date boundaries AND slice data
             train_start = data.index[train_idx[0]]
             train_end = data.index[train_idx[-1]]
             test_start = data.index[test_idx[0]]
             test_end = data.index[test_idx[-1]]
+            
+            # Extract DataFrame slices once per fold
+            train_slice = data.iloc[train_idx]
+            test_slice = data.iloc[test_idx]
 
             print(
                 f"\n  Fold {i + 1}/{len(folds)}: "
@@ -285,12 +298,13 @@ class WalkForwardOptimizer:
                 f"OOS {test_start.date()} → {test_end.date()}"
             )
 
-            # 1. Optimize (IS) — date-bounded
+            # 1. Optimize (IS) — dataset injected
             fold_start_time = time.time()
             opt_result = self.base_optimizer.optimize_on_slice(
                 strategy_class=strategy_class,
                 start_date=train_start,
                 end_date=train_end,
+                data=train_slice,
                 n_trials=n_trials,
                 fold_id=i,
             )
@@ -300,12 +314,13 @@ class WalkForwardOptimizer:
             total_trials += n_trials_actual
             trial_std = opt_result.get("trial_std", 0.1)
 
-            # 2. Evaluate (OOS) — date-bounded
+            # 2. Evaluate (OOS) — dataset injected
             eval_result = self.base_optimizer.evaluate_on_slice(
                 strategy_class=strategy_class,
                 params=opt_result["best_params"],
                 start_date=test_start,
                 end_date=test_end,
+                data=test_slice,
             )
 
             fold_results.append(
