@@ -12,7 +12,7 @@ The primary challenge is to construct a pipeline that structurally separates IS 
 
 ### 1. Model
 The engine is built on a hybrid architecture. It leverages fully vectorized pre-computation of indicators via `pandas`/`numpy` to achieve O(1) bar lookups, whilst maintaining a precise event-driven posture for position management. 
-Several regime filters are applied natively: Augmented Dickey-Fuller (ADF) for stationarity, percentile-based volatility filters, and T-Stat trend estimation.
+Several regime filters are applied natively: Half-Life mean-reversion speed estimation, Augmented Dickey-Fuller (ADF) for macro stationarity, percentile-based volatility filters, and T-Stat trend estimation.
 
 ### 2. Calculation Algorithm
 To structurally prevent any data leakage, all signal matrices are strictly shifted by 1 bar:
