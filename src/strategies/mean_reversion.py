@@ -1,5 +1,5 @@
 """
-RSI + Bollinger Bands Mean Reversion Strategy.
+RSI Mean Reversion Strategy.
 
 Signal logic:
   - Enter LONG  when RSI < oversold threshold.
@@ -53,8 +53,8 @@ class MeanReversionConfig:
         atr_sl_mult: Stop loss multiplier based on ATR.
     """
     rsi_window: int = 14           # Lookback period for RSI calculation
-    rsi_oversold: float = 30.0     # Buy signal threshold
-    rsi_overbought: float = 70.0   # Sell signal threshold
+    rsi_oversold: float = 20.0     # Buy signal threshold
+    rsi_overbought: float = 80.0   # Sell signal threshold
 
     use_vol_filter: bool = True    # Only trade during "normal" volatility
     vol_regime_window: int = 50    # Short-term window to measure current vol
@@ -131,9 +131,9 @@ class MeanReversionStrategy(BaseStrategy):
         ).max(axis=1)
         atr = tr.ewm(span=cfg.atr_window, adjust=False).mean()
 
-        # Shift indicators to remove look-ahead bias
-        self._rsi: pd.Series = rsi.shift(1)
-        self._atr: pd.Series = atr.shift(1)
+        # Indicators are looked up directly from the closing bar's timestamp.
+        self._rsi: pd.Series = rsi
+        self._atr: pd.Series = atr
 
         # ── Optional advanced filters ──────────────────────────────────────
         self._vol_filter: Optional[VolatilityRegimeFilter] = None
