@@ -71,7 +71,7 @@ Working with minute-level OHLCV requires robust cleaning:
 
 
 *(Placeholder: Add screenshot of WFO Terminal Output)*
-> Shows the rolling-window fold progression, out-of-sample parameter selection stability, and applications of the stability penalty.
+> Shows the rolling-window fold progression, out-of-sample parameter selection stability, and applications of the stability penalty. Optimized: (`sma_crossover.py`)
 
 
 ## Computational Profile
