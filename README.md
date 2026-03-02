@@ -70,7 +70,8 @@ Working with minute-level OHLCV requires robust cleaning:
 > *   **Risk Pruning (`wfo_prune_max_dd_pct`)**: Kills trials instantly if drawdown exceeds the limit.
 
 
-*(Placeholder: Add screenshot of WFO Terminal Output)*
+<img width="622" height="540" alt="image" src="https://github.com/user-attachments/assets/33cfaf5c-bb29-4502-a650-e3ad0fb034ee" />
+
 > Shows the rolling-window fold progression, out-of-sample parameter selection stability, and applications of the stability penalty. Optimized: (`sma_crossover.py`)
 
 
