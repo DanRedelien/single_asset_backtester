@@ -46,17 +46,21 @@ class PerformanceMetrics:
         
         # CAGR
         days = (df.index[-1] - df.index[0]).days
-        cagr = max(0.0, 1 + total_return) ** (365 / max(days, 1)) - 1 if days > 0 else 0.0
+        years = days / 365.25 if days > 0 else 1.0
+        cagr = max(0.0, 1 + total_return) ** (1 / years) - 1 if years > 0 else 0.0
+
+        # Annualization factor for intraday returns
+        bars_per_year = len(df) / years if years > 0 else 252
 
         # Volatility (Annualized)
-        std_dev = df['returns'].std() * np.sqrt(252)
+        std_dev = df['returns'].std() * np.sqrt(bars_per_year)
 
         # Sharpe Ratio
         sharpe = (cagr - self.risk_free_rate) / std_dev if std_dev > 0 else 0.0
 
         # Sortino Ratio (Downside Deviation)
         downside_returns = df.loc[df['returns'] < 0, 'returns']
-        downside_std = downside_returns.std() * np.sqrt(252)
+        downside_std = downside_returns.std() * np.sqrt(bars_per_year)
         sortino = (cagr - self.risk_free_rate) / downside_std if downside_std > 0 else 0.0
 
         # Drawdown
