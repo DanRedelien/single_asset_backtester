@@ -49,9 +49,11 @@ Working with minute-level OHLCV requires robust cleaning:
 ## Outputs & Diagnostics
 
 <img width="1591" height="796" alt="image" src="https://github.com/user-attachments/assets/e5e783b3-ce9d-470e-8185-620e1cedb90d" />
+
 > Displays the overall PnL curve, max drawdown underwater plots, and the core statistical metrics table.
 
 <img width="650" height="205" alt="image" src="https://github.com/user-attachments/assets/971925c3-c893-4e14-91f6-e0913cacff43" />
+
 > Walk-Forward Validation parameters (`settings.py`) designed to prevent curve-fitting:
 > *   **Walk-Forward Folds (`wfo_n_folds`)**: Number of IS/OOS segments.
 > *   **OOS Test Size (`wfo_test_size_pct`)**: Data fraction reserved for out-of-sample testing.
@@ -65,6 +67,7 @@ Working with minute-level OHLCV requires robust cleaning:
 > Shows the rolling-window fold progression, out-of-sample parameter selection stability, and applications of the stability penalty.
 
 <img width="816" height="384" alt="image" src="https://github.com/user-attachments/assets/4fca7414-0392-42ae-91ee-57c8d781944f" />
+
 > Displays the strategy's configuration, highlighting the parameter search bounds and active filters.
 
 ## Computational Profile
