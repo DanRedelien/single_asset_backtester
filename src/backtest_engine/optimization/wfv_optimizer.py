@@ -11,6 +11,7 @@ Includes 'Skeptic' analysis tools:
 from typing import Dict, Any, List, Optional, Type
 from dataclasses import dataclass, field
 from collections import Counter
+import time
 import pandas as pd
 import numpy as np
 import math
@@ -113,6 +114,11 @@ class WFVReport:
     candidate_params: Dict[str, Any] = field(default_factory=dict)
     verdict: str = "FAIL"
     warnings: List[str] = field(default_factory=list)
+
+    # Computational Profiling
+    total_wfo_time_sec: float = 0.0
+    avg_fold_time_sec: float = 0.0
+    avg_trial_time_sec: float = 0.0
 
     def compute(self) -> None:
         if not self.fold_results:
@@ -261,6 +267,8 @@ class WalkForwardOptimizer:
         folds = list(splitter.split(data))
 
         fold_results = []
+        total_trials = 0
+        wfo_start_time = time.time()
 
         print(f"\n[WFV] Starting {n_folds}-Fold Walk-Forward on {symbol}...")
 
@@ -278,6 +286,7 @@ class WalkForwardOptimizer:
             )
 
             # 1. Optimize (IS) — date-bounded
+            fold_start_time = time.time()
             opt_result = self.base_optimizer.optimize_on_slice(
                 strategy_class=strategy_class,
                 start_date=train_start,
@@ -285,8 +294,10 @@ class WalkForwardOptimizer:
                 n_trials=n_trials,
                 fold_id=i,
             )
+            fold_end_time = time.time()
 
             n_trials_actual = opt_result.get("n_trials", n_trials)
+            total_trials += n_trials_actual
             trial_std = opt_result.get("trial_std", 0.1)
 
             # 2. Evaluate (OOS) — date-bounded
@@ -315,12 +326,20 @@ class WalkForwardOptimizer:
 
             print(
                 f"  Fold {i + 1}: IS {opt_result['best_score']:.2f} → "
-                f"OOS {eval_result['score']:.2f}"
+                f"OOS {eval_result['score']:.2f} "
+                f"({fold_end_time - fold_start_time:.1f}s)"
             )
+
+        wfo_end_time = time.time()
+        total_time = wfo_end_time - wfo_start_time
 
         report = WFVReport(
             symbol, strategy_class.__name__, len(folds), fold_results
         )
+        report.total_wfo_time_sec = total_time
+        report.avg_fold_time_sec = total_time / len(folds) if folds else 0.0
+        report.avg_trial_time_sec = total_time / total_trials if total_trials else 0.0
+
         report.compute()
 
         self._print_human_report(report)
@@ -356,6 +375,11 @@ class WalkForwardOptimizer:
             f"  Skeptic Confidence (DSR): {report.avg_dsr:.0%} "
             f"(Prob. Skill > Noise)"
         )
+        
+        print(f"\n[COMPUTATIONAL PROFILE]")
+        print(f"  Total WFO Runtime: {report.total_wfo_time_sec / 60:.1f} mins")
+        print(f"  Average Fold Time: {report.avg_fold_time_sec:.1f} secs")
+        print(f"  Average Trial Time: {report.avg_trial_time_sec:.3f} secs")
 
         if report.warnings:
             print(f"\n[RISK FLAGS]")
