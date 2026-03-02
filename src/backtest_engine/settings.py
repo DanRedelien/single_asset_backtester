@@ -37,7 +37,7 @@ class BacktestSettings(BaseSettings):
     default_symbol: str = "YM"
 
     # ── Bar settings ───────────────────────────────────────────────────────────
-    low_interval: str = "5m"      # Base resolution used for data loading
+    low_interval: str = "30m"      # Base resolution used for data loading
     bar_type: str = "time"        # Options: "time", "volume", "range", "heikin_ashi"
     bar_size: float = 0.0         # Threshold for volume / range bar types
 
@@ -57,6 +57,11 @@ class BacktestSettings(BaseSettings):
     max_daily_loss: Optional[float] = None      # Halt today if daily loss exceeds value
     max_drawdown_pct: Optional[float] = None    # Permanent halt at this drawdown %
     max_account_floor: Optional[float] = None   # Permanent halt below this equity level
+
+    # ── Statistical Filters / Numerical Protections ────────────────────────────
+    # Remark: Setting any of these to None will disable the corresponding numerical protection.
+    hl_lambda_min: Optional[float] = 1e-4       # Minimum mean-reverting speed (slope) to consider the series stationary
+    hl_max_cap: Optional[float] = 500.0         # Hard cap limit for calculated Half-Life (preventing explosion to infinity)
 
     # ── Instrument specifications ──────────────────────────────────────────────
     instrument_specs: dict = Field(
