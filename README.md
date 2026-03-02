@@ -27,7 +27,7 @@ Raw OHLCV minute data is fetched via `IBFetcher` and cached locally as Parquet f
 | Control | Implementation |
 |---------|---------------|
 | Walk-Forward | 5-Fold Rolling Window (IS/OOS) |
-| No Look-Ahead | Strict `.shift(1)` enforced within Strategy `__init__` |
+| No Look-Ahead | Engine automatically executes at **$OPEN_{T+1}$** for signals evaluated at **$CLOSE_T$** |
 | Stats Validation | T-Statistic, P-Value, and Deflated Sharpe Ratio (DSR) tracking |
 | Parameter Stability| Algorithmic penalties for inconsistent outcomes and Alpha Decay across OOS folds |
 
