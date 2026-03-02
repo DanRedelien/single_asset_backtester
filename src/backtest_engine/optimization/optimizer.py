@@ -128,9 +128,8 @@ class OptunaOptimizer:
         Returns:
             Dict with 'stats' sub-dict and 'engine' reference.
         """
-        s = get_settings()
-        for k, v in params.items():
-            setattr(s, k, v)
+        # Isolate parameters per trial by copying the settings singleton
+        s = get_settings().model_copy(update=params)
 
         engine = BacktestEngine(
             start_date=start_date,
