@@ -52,8 +52,8 @@ class SmaCrossoverConfig:
         trend_sma_window: Long-term trend SMA for directional bias. When price is above it, only
             LONG entries are allowed. When below, only SHORT. Set to None to disable.
     """
-    fast_window: int = 20          # Fast moving average period
-    slow_window: int = 50          # Slow moving average period
+    fast_window: int = 15          # Fast moving average period
+    slow_window: int = 20          # Slow moving average period
     atr_window: int = 14           # ATR lookback period
     atr_sl_mult: float = 2.0       # Stop-loss in ATR multiples
     atr_tp_mult: float = 3.0       # Take-profit in ATR multiples
@@ -62,13 +62,13 @@ class SmaCrossoverConfig:
     vol_regime_window: int = 50    # Short-term window to measure current vol
     vol_history_window: int = 500  # Historical window to compare against
     vol_min_pct: float = 0.3      # Minimum activity allowed (no dead markets)
-    vol_max_pct: float = 0.8      # Maximum activity allowed (no panic/crash markets)
+    vol_max_pct: float = 1.0      # Maximum activity allowed (no panic/crash markets)
 
     use_trend_filter: bool = True  # Only enter when trend is statistically confirmed
     trend_window: int = 100        # Window to measure trend strength
-    trend_min_tstat: float = 1.5   # Minimum T-stat to enter (we only want real, meaningful crossovers)
+    trend_min_tstat: float = 1.25   # Minimum T-stat to enter (we only want real, meaningful crossovers)
 
-    trend_sma_window: Optional[int] = 1500  # Long-term bias SMA. None = disabled
+    trend_sma_window: Optional[int] = 900  # Long-term bias SMA. None = disabled
 
     # ── Half-Life Time Stop ────────────────────────────────────────────────────
     use_hl_filter: bool = False     # Use Ornstein-Uhlenbeck Half-Life for time stops
@@ -130,17 +130,17 @@ class SmaCrossoverStrategy(BaseStrategy):
         ).max(axis=1)
         atr = tr.ewm(span=cfg.atr_window, adjust=False).mean()
 
-        # Shift all indicators by 1 bar to remove look-ahead bias
-        self._signal: pd.Series        = regime_signal.shift(1)    # Used for reversal exit check
-        self._crossover: pd.Series     = crossover_signal.shift(1) # Used for fresh entry trigger
-        self._atr: pd.Series           = atr.shift(1)
-        self._close: pd.Series         = close.shift(1)
+        # Store indicators (engines executes at T+1 Open, no need to shift)
+        self._signal: pd.Series        = regime_signal    # Used for reversal exit check
+        self._crossover: pd.Series     = crossover_signal # Used for fresh entry trigger
+        self._atr: pd.Series           = atr
+        self._close: pd.Series         = close
 
         # ── Long-term trend SMA for directional bias ───────────────────────
         self._trend_sma: Optional[pd.Series] = None
         if cfg.trend_sma_window is not None:
             ts = close.rolling(window=cfg.trend_sma_window, min_periods=cfg.trend_sma_window).mean()
-            self._trend_sma = ts.shift(1)
+            self._trend_sma = ts
             print(f"[SMA] TrendBias SMA enabled (window={cfg.trend_sma_window}) — LONG above, SHORT below")
 
         # ── Optional advanced filters ──────────────────────────────────────
@@ -205,12 +205,12 @@ class SmaCrossoverStrategy(BaseStrategy):
         return {
             "sma_fast_window":      (5,   50,   5),
             "sma_slow_window":      (20, 200,  10),
-            #"sma_atr_sl_mult":      (1.0, 3.0, 0.5),
-            #"sma_atr_tp_mult":      (1.5, 6.0, 0.5),
-            #"sma_vol_min_pct":      (0.10, 0.60, 0.05),
-            #"sma_vol_max_pct":      (0.60, 1.00, 0.05),
-            #"sma_trend_min_tstat":  (0.5,  3.0, 0.25),
-            #"sma_trend_sma_window": (200, 3000, 100),
+            "sma_atr_sl_mult":      (1.0, 3.0, 0.5),
+            "sma_atr_tp_mult":      (1.5, 6.0, 0.5),
+            "sma_vol_min_pct":      (0.10, 0.60, 0.05),
+            "sma_vol_max_pct":      (0.60, 1.00, 0.05),
+            "sma_trend_min_tstat":  (0.5,  3.0, 0.25),
+            "sma_trend_sma_window": (200, 3000, 100),
         }
 
     # ── Event hook ─────────────────────────────────────────────────────────────
