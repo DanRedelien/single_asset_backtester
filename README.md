@@ -115,6 +115,7 @@ python run.py --wfo --strategy mean_rev
 
 ## Future Improvements
 
+- [ ] Move to NautilusTrader for Ultra-High performance.
 - [ ] Tick-level orderbook replay integration.
 - [ ] Portfolio-level margin and correlation analysis.
 - [ ] Probability of bankruptcy estimation via Monte Carlo simulations.
