@@ -169,7 +169,7 @@ class PerformanceMetrics:
 
         COL_W = 16
         LABEL_W = 20
-        sep = "─" * (LABEL_W + COL_W + 4)
+        sep = "-" * (LABEL_W + COL_W + 4)
 
         def fmt(value, is_pct=False, is_money=False, is_int=False):
             if pd.isna(value) or value is None: return "NaN"
