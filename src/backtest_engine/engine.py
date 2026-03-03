@@ -332,7 +332,8 @@ class BacktestEngine:
         data_len = len(data)
 
         for i in range(data_len):
-            if self.trading_halted_permanently:
+            # Break only if we have no pending orders (like liquidation orders)
+            if self.trading_halted_permanently and not pending_orders:
                 break
 
             timestamp = timestamps[i]
