@@ -149,3 +149,4 @@ def test_circuit_breaker_max_drawdown():
     # Let's verify we closed out our position.
     final_positions = engine.portfolio.positions
     assert sum(abs(v) for v in final_positions.values()) == 0, "Positions were not liquidated after halt!"
+
