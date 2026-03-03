@@ -53,23 +53,6 @@ Working with minute-level OHLCV requires robust cleaning:
 > Displays the overall PnL curve, max drawdown underwater plots, and the core statistical metrics table. Analyzed: (`sma_crossover.py`)
 
 
-<img width="816" height="384" alt="image" src="https://github.com/user-attachments/assets/4fca7414-0392-42ae-91ee-57c8d781944f" />
-
-> Displays the strategy's configuration (`sma_crossover.py`), highlighting the parameter search bounds and active filters.
-
-
-<img width="650" height="205" alt="image" src="https://github.com/user-attachments/assets/971925c3-c893-4e14-91f6-e0913cacff43" />
-
-> Walk-Forward Validation parameters (`settings.py`) designed to prevent curve-fitting:
-> *   **Walk-Forward Folds (`wfo_n_folds`)**: Number of IS/OOS segments.
-> *   **OOS Test Size (`wfo_test_size_pct`)**: Data fraction reserved for out-of-sample testing.
-> *   **Degrees of Freedom (`wfo_max_parameters`)**: Hard cap on optimizable variables to penalize complexity.
-> *   **Search Depth (`wfo_n_trials`)**: Optuna iterations per fold.
-> *   **Significance Gate (`wfo_prune_min_trades`)**: Minimum trades required; ensures metrics are statistically valid.
-> *   **Activity Penalty (`wfo_prune_target_trades_mult`)**: Penalizes strategies that deviate from the expected trade frequency.
-> *   **Risk Pruning (`wfo_prune_max_dd_pct`)**: Kills trials instantly if drawdown exceeds the limit.
-
-
 <img width="622" height="540" alt="image" src="https://github.com/user-attachments/assets/33cfaf5c-bb29-4502-a650-e3ad0fb034ee" />
 
 > Shows the rolling-window fold progression, out-of-sample parameter selection stability, and applications of the stability penalty. Optimized: (`sma_crossover.py`)
