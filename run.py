@@ -33,7 +33,7 @@ def _load_strategy(name: str):
     }
 
     if name not in registry:
-        print(f"[Error] Unknown strategy '{name}'. Available: {list(registry)}")
+        print(f"[Error] Unknown strategy '{name}'. Available: {list(registry.keys())}")
         sys.exit(1)
 
     module_path, class_name = registry[name].split(":")
