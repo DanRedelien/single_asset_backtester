@@ -56,7 +56,7 @@ Working with minute-level OHLCV requires robust cleaning:
 > Displays the overall PnL curve, max drawdown underwater plots, and the core statistical metrics table. Analyzed: (`sma_crossover.py`)
 
 
-<img width="622" height="540" alt="image" src="https://github.com/user-attachments/assets/33cfaf5c-bb29-4502-a650-e3ad0fb034ee" />
+<img width="677" height="499" alt="image" src="https://github.com/user-attachments/assets/8feebe9d-f978-462c-8ef7-fed467efd743" />
 
 > Shows the rolling-window fold progression, out-of-sample parameter selection stability, and applications of the stability penalty. Optimized: (`sma_crossover.py`)
 
