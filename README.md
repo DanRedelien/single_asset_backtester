@@ -63,13 +63,13 @@ Working with minute-level OHLCV requires robust cleaning:
 
 ## Computational Profile
 
-*Benchmark evaluated on Intel Core i7 / 8GB RAM / Python 3.11*
+*Benchmark evaluated on AMD Ryzen 5 / 16GB RAM / Python 3.11*
 
 Optimization on minute-level data over 2-year periods is heavily vectorized:
 *   **Optuna Budget**: 500 parameter trials per Fold
-*   **Single Trial Speed**: ~ 0.24 seconds
-*   **Average Fold Runtime**: ~ 124 seconds
-*   **Total WFV Execution**: ~ 10 minutes
+*   **Single Trial Speed**: ~ 0.116 seconds
+*   **Average Fold Runtime**: ~ 25.5 seconds
+*   **Total WFV Execution**: ~ 1.7 minutes
 
 ## Project Structure
 
